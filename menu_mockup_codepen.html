@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu Mockup — Copa 2026</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: #f4f4f6;
+    color: #1a1a1a;
+    padding: 24px 16px 48px;
+    min-height: 100vh;
+  }
+
+  /* ── PORTAL SELECTOR ── */
+  .portal-selector {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .ps-btn {
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1.5px solid #ccc;
+    border-radius: 20px;
+    cursor: pointer;
+    background: #fff;
+    color: #555;
+    transition: all .15s;
+    font-family: inherit;
+  }
+  .ps-btn:hover { border-color: #888; color: #222; }
+  .ps-btn.active {
+    background: #1a1a2e;
+    color: #fff;
+    border-color: #1a1a2e;
+  }
+
+  /* ── PORTAL PANELS ── */
+  .portal-block { display: none; }
+  .portal-block.active { display: block; }
+
+  /* ── BROWSER CHROME ── */
+  .browser-chrome {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+  .browser-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    background: #f0f0f2;
+    border-bottom: 1px solid #ddd;
+  }
+  .browser-dots { display: flex; gap: 6px; }
+  .browser-dots span {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    display: block;
+  }
+  .dot-r { background: #f09595; }
+  .dot-y { background: #fac775; }
+  .dot-g { background: #97c459; }
+  .url-pill {
+    flex: 1;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: #888;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* ── NAVBAR ── */
+  .nav-root { background: #1a1a2e; }
+  .nav-root.placar  { background: #0d1b2a; }
+  .nav-root.trivela { background: #111827; }
+  .nav-root.lance   { background: #1a2e1a; }
+
+  .secondary-bar {
+    display: flex;
+    gap: 0;
+    padding: 0 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .secondary-item {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: color .15s;
+  }
+  .secondary-item:hover { color: rgba(255,255,255,0.8); }
+
+  .nav-top {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    height: 52px;
+    gap: 0;
+  }
+  .nav-logo {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-right: 28px;
+    letter-spacing: -0.4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .nav-logo .accent { color: #EF9F27; }
+  .nav-logo .accent-green { color: #7CC47C; }
+
+  .nav-items {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    flex: 1;
+    overflow-x: auto;
+  }
+  .nav-items::-webkit-scrollbar { display: none; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0 13px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+    cursor: pointer;
+    border-bottom: 2.5px solid transparent;
+    transition: color .12s;
+    white-space: nowrap;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .nav-item:hover { color: #fff; }
+  .nav-item.active-item { color: #fff; border-bottom-color: rgba(255,255,255,0.5); }
+
+  .nav-item.copa-item {
+    color: #EF9F27;
+    border-bottom-color: #EF9F27;
+    font-weight: 600;
+  }
+  .nav-item.copa-item.open { background: rgba(239,159,39,0.1); }
+
+  .nav-item.ext-link { margin-left: auto; opacity: 0.55; font-size: 12px; }
+
+  .copa-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    background: #EF9F27;
+    color: #412402;
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-left: 5px;
+    vertical-align: middle;
+    line-height: 1.5;
+  }
+  .badge-purple {
+    background: #7F77DD;
+    color: #EEEDFE;
+  }
+  .badge-blue {
+    background: #535ABF;
+    color: #EEEDFE;
+  }
+
+  /* ── MEGA MENU ── */
+  .mega-menu {
+    background: #fff;
+    border-top: 3px solid #EF9F27;
+  }
+
+  .mega-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid #eee;
+  }
+  .mega-col {
+    padding: 18px 20px 22px;
+    border-right: 1px solid #eee;
+  }
+  .mega-col:last-child { border-right: none; }
+  .mega-col.span2 { grid-column: span 2; }
+  .mega-col.span3 { grid-column: span 3; }
+
+  .col-inner-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .col-inner-grid3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+  }
+
+  .col-head {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+  }
+  .col-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-green  { background: #1D9E75; }
+  .dot-purple { background: #7F77DD; }
+  .dot-amber  { background: #BA7517; }
+
+  .col-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: #999;
+  }
+  .col-title-badge {
+    font-weight: 400;
+    font-size: 9px;
+    color: #BA7517;
+    background: #FAEEDA;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-left: 5px;
+  }
+
+  .mega-link {
+    display: flex;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 12.5px;
+    color: #333;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f3f3;
+    transition: color .1s;
+  }
+  .mega-link:last-child { border-bottom: none; }
+  .mega-link:hover { color: #1a1a2e; }
+  .mega-link.featured { color: #633806; font-weight: 500; }
+  .mega-link .arrow { margin-left: auto; font-size: 11px; color: #ccc; }
+  .ext-note {
+    font-size: 10px;
+    color: #bbb;
+    margin-left: 4px;
+    font-style: italic;
+  }
+
+  /* ── QUICK NAV BOTTOM ── */
+  .quick-nav {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 10px 20px 12px;
+    background: #f8f8fa;
+    border-top: 1px solid #eee;
+  }
+  .qn-label { font-size: 11px; color: #aaa; margin-right: 4px; }
+  .qn-pill {
+    font-size: 11px;
+    padding: 4px 11px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    color: #555;
+    cursor: pointer;
+    background: #fff;
+    transition: all .12s;
+    font-family: inherit;
+  }
+  .qn-pill:hover { border-color: #bbb; color: #222; }
+  .qn-pill.active-pill {
+    background: rgba(239,159,39,0.12);
+    border-color: #EF9F27;
+    color: #633806;
+  }
+
+  /* ── ANNOTATION ── */
+  .anno {
+    font-size: 13px;
+    color: #555;
+    padding: 10px 14px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    line-height: 1.6;
+  }
+  .anno strong { color: #1a1a2e; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="portal-selector">
+  <button class="ps-btn active" onclick="switchPortal('ude', this)">UmDois Esportes</button>
+  <button class="ps-btn" onclick="switchPortal('placar', this)">Placar</button>
+  <button class="ps-btn" onclick="switchPortal('trivela', this)">Trivela</button>
+  <button class="ps-btn" onclick="switchPortal('lance', this)">Lance!</button>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     UMDOIS
+════════════════════════════════════════════ -->
+<div id="ude" class="portal-block active">
+  <div class="browser-chrome">
+    <div class="browser-bar">
+      <div class="browser-dots">
+        <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+      </div>
+      <div class="url-pill">umdoisesportes.com.br/copa-do-mundo-2026/</div>
+    </div>
+    <div class="nav-root">
+      <div class="secondary-bar">
+        <span class="secondary-item">Athletico</span>
+        <span class="secondary-item">Coritiba</span>
+        <span class="secondary-item">Paraná Clube</span>
+        <span class="secondary-item">Futebol Nacional</span>
+      </div>
+      <div class="nav-top">
+        <div class="nav-logo">Um<span class="accent">Dois</span> Esportes</div>
+        <div class="nav-items">
+          <div class="nav-item" onclick="toggleMega('ude','noticias')">Notícias</div>
+          <div class="nav-item" onclick="toggleMega('ude','apostas')">Apostas</div>
+          <div class="nav-item" onclick="toggleMega('ude','palpites')">Palpites</div>
+          <div class="nav-item copa-item open" id="ude-copa" onclick="toggleMega('ude','copa')">
+            Copa 2026 <span class="copa-badge">novo</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Copa dropdown -->
+      <div id="ude-mega-copa" class="mega-menu">
+        <div class="mega-inner">
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Cobertura</span></div>
+            <div class="mega-link featured">Hub Copa 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Notícias Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Grupos e times <span class="arrow">›</span></div>
+            <div class="mega-link">Seleção brasileira <span class="arrow">›</span></div>
+            <div class="mega-link">Calendário de jogos <span class="arrow">›</span></div>
+            <div class="mega-link">Estatísticas e dados <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-purple"></div><span class="col-title">Palpites</span></div>
+            <div class="mega-link featured">Palpites de hoje <span class="arrow">›</span></div>
+            <div class="mega-link">Fase de grupos <span class="arrow">›</span></div>
+            <div class="mega-link">Favoritos ao título <span class="arrow">›</span></div>
+            <div class="mega-link">Artilheiros Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Campeão Copa 2026 <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-amber"></div><span class="col-title">Apostas</span></div>
+            <div class="mega-link featured">Melhores casas Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Bônus Copa 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Odds Brasil na Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Guia de apostas Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Mercados especiais <span class="arrow">›</span></div>
+          </div>
+        </div>
+        <div class="quick-nav">
+          <span class="qn-label">Acesso rápido:</span>
+          <button class="qn-pill active-pill">Copa 2026</button>
+          <button class="qn-pill">Brasileirão</button>
+          <button class="qn-pill">Libertadores</button>
+          <button class="qn-pill">Champions League</button>
+        </div>
+      </div>
+
+      <!-- Apostas dropdown -->
+      <div id="ude-mega-apostas" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-amber"></div><span class="col-title">Casas de apostas</span></div>
+            <div class="mega-link featured">Melhores casas 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Casas legalizadas <span class="arrow">›</span></div>
+            <div class="mega-link">Novas casas <span class="arrow">›</span></div>
+            <div class="mega-link">Casas com bônus <span class="arrow">›</span></div>
+            <div class="mega-link">Saque rápido <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-purple"></div><span class="col-title">Cassino</span></div>
+            <div class="mega-link">Melhores cassinos <span class="arrow">›</span></div>
+            <div class="mega-link">Cassinos legalizados <span class="arrow">›</span></div>
+            <div class="mega-link">Rodadas grátis <span class="arrow">›</span></div>
+            <div class="mega-link">Slots com maior RTP <span class="arrow">›</span></div>
+            <div class="mega-link">Cassinos via Pix <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Guias</span></div>
+            <div class="mega-link">Como apostar online <span class="arrow">›</span></div>
+            <div class="mega-link">Depósito mínimo R$1 <span class="arrow">›</span></div>
+            <div class="mega-link">Apps de apostas <span class="arrow">›</span></div>
+            <div class="mega-link featured">Copa 2026 ↗ <span class="arrow">›</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Palpites dropdown -->
+      <div id="ude-mega-palpites" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col span2">
+            <div class="col-head"><div class="col-dot dot-purple"></div><span class="col-title">Por competição</span></div>
+            <div class="col-inner-grid">
+              <div class="mega-link">Palpites de hoje <span class="arrow">›</span></div>
+              <div class="mega-link">Palpites de amanhã <span class="arrow">›</span></div>
+              <div class="mega-link featured">Copa 2026 <span class="arrow">›</span></div>
+              <div class="mega-link">Brasileirão <span class="arrow">›</span></div>
+              <div class="mega-link">Copa do Brasil <span class="arrow">›</span></div>
+              <div class="mega-link">Champions League <span class="arrow">›</span></div>
+            </div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Especiais</span></div>
+            <div class="mega-link">Apostas múltiplas <span class="arrow">›</span></div>
+            <div class="mega-link">Odds aumentadas <span class="arrow">›</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notícias dropdown -->
+      <div id="ude-mega-noticias" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col span3">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Últimas notícias</span></div>
+            <div class="col-inner-grid3">
+              <div class="mega-link featured">Copa 2026 <span class="arrow">›</span></div>
+              <div class="mega-link">Futebol nacional <span class="arrow">›</span></div>
+              <div class="mega-link">Futebol internacional <span class="arrow">›</span></div>
+              <div class="mega-link">Athletico PR <span class="arrow">›</span></div>
+              <div class="mega-link">Coritiba <span class="arrow">›</span></div>
+              <div class="mega-link">Paraná Clube <span class="arrow">›</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="anno"><strong>UmDois:</strong> Copa 2026 no menu principal do portal (não dentro de /apostas/). Mega menu com 3 colunas separando cobertura editorial, palpites e apostas. Barra secundária mantém os times regionais. Clique nos itens do menu para alternar dropdowns.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PLACAR
+════════════════════════════════════════════ -->
+<div id="placar" class="portal-block">
+  <div class="browser-chrome">
+    <div class="browser-bar">
+      <div class="browser-dots">
+        <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+      </div>
+      <div class="url-pill">placar.com.br/apostas/copa-do-mundo-2026/</div>
+    </div>
+    <div class="nav-root placar">
+      <div class="nav-top">
+        <div class="nav-logo" style="color:#4FC3F7">Placar <span class="accent">apostas</span></div>
+        <div class="nav-items">
+          <div class="nav-item" onclick="toggleMega('placar','casas')">Casas de apostas</div>
+          <div class="nav-item" onclick="toggleMega('placar','cassinos')">Cassinos</div>
+          <div class="nav-item" onclick="toggleMega('placar','palpites')">
+            Palpites <span class="copa-badge badge-purple">novo</span>
+          </div>
+          <div class="nav-item copa-item open" id="placar-copa" onclick="toggleMega('placar','copa')">
+            Copa 2026 <span class="copa-badge">novo</span>
+          </div>
+          <div class="nav-item ext-link" onclick="toggleMega('placar','none')">Notícias ↗</div>
+        </div>
+      </div>
+
+      <div id="placar-mega-copa" class="mega-menu">
+        <div class="mega-inner">
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Cobertura editorial</span></div>
+            <div class="mega-link featured">Notícias Copa ↗ <span class="ext-note">placar.com.br</span></div>
+            <div class="mega-link">Seleções participantes <span class="arrow">›</span></div>
+            <div class="mega-link">Calendário Copa 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Grupos e tabela <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-purple"></div><span class="col-title">Palpites Copa</span></div>
+            <div class="mega-link featured">Palpites de hoje <span class="arrow">›</span></div>
+            <div class="mega-link">Fase de grupos <span class="arrow">›</span></div>
+            <div class="mega-link">Mata-mata Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Campeão Copa 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Artilheiro Copa <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-amber"></div><span class="col-title">Apostas Copa</span></div>
+            <div class="mega-link featured">Top casas Copa 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Bônus Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Odds ao vivo Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Guia mercados Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Códigos promo Copa <span class="arrow">›</span></div>
+          </div>
+        </div>
+        <div class="quick-nav">
+          <span class="qn-label">Competições:</span>
+          <button class="qn-pill active-pill">Copa 2026</button>
+          <button class="qn-pill">Brasileirão</button>
+          <button class="qn-pill">Champions League</button>
+          <button class="qn-pill">Premier League</button>
+        </div>
+      </div>
+
+      <div id="placar-mega-casas" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-amber"></div><span class="col-title">Melhores casas</span></div>
+            <div class="mega-link featured">Top casas 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Bet365 <span class="arrow">›</span></div>
+            <div class="mega-link">Betano <span class="arrow">›</span></div>
+            <div class="mega-link">Superbet <span class="arrow">›</span></div>
+            <div class="mega-link">KTO <span class="arrow">›</span></div>
+            <div class="mega-link">Ver todas <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Por categoria</span></div>
+            <div class="mega-link">Casas legalizadas <span class="arrow">›</span></div>
+            <div class="mega-link">Novas casas <span class="arrow">›</span></div>
+            <div class="mega-link">Saque rápido <span class="arrow">›</span></div>
+            <div class="mega-link">Cash out <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-purple"></div><span class="col-title">Códigos</span></div>
+            <div class="mega-link">Superbet código <span class="arrow">›</span></div>
+            <div class="mega-link">Novibet código <span class="arrow">›</span></div>
+            <div class="mega-link">Betano código <span class="arrow">›</span></div>
+            <div class="mega-link featured">Códigos Copa 2026 <span class="arrow">›</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="placar-mega-palpites" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col span2">
+            <div class="col-head"><div class="col-dot dot-purple"></div><span class="col-title">Por competição</span></div>
+            <div class="col-inner-grid">
+              <div class="mega-link">Palpites de hoje <span class="arrow">›</span></div>
+              <div class="mega-link">Palpites de amanhã <span class="arrow">›</span></div>
+              <div class="mega-link featured">Copa 2026 <span class="arrow">›</span></div>
+              <div class="mega-link">Brasileirão <span class="arrow">›</span></div>
+              <div class="mega-link">Champions League <span class="arrow">›</span></div>
+              <div class="mega-link">Premier League <span class="arrow">›</span></div>
+            </div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-amber"></div><span class="col-title">Apostas sugeridas</span></div>
+            <div class="mega-link">Apostas do dia <span class="arrow">›</span></div>
+            <div class="mega-link">Odds aumentadas <span class="arrow">›</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="placar-mega-cassinos" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-amber"></div><span class="col-title">Cassinos online</span></div>
+            <div class="mega-link featured">Melhores cassinos 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Cassinos legalizados <span class="arrow">›</span></div>
+            <div class="mega-link">Cassinos com Pix <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-purple"></div><span class="col-title">Jogos</span></div>
+            <div class="mega-link">Crash games <span class="arrow">›</span></div>
+            <div class="mega-link">Slots <span class="arrow">›</span></div>
+            <div class="mega-link">Rodadas grátis <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Promoções</span></div>
+            <div class="mega-link">Bônus sem depósito <span class="arrow">›</span></div>
+            <div class="mega-link">Plataforma R$1 <span class="arrow">›</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="placar-mega-none" style="display:none"></div>
+    </div>
+  </div>
+  <div class="anno"><strong>Placar:</strong> Seção de apostas ganha aba de Palpites (nova) e Copa 2026. O link "Notícias ↗" no canto direito aponta para placar.com.br, tornando explícita a ponte editorial. Colunas Copa incluem editorial externo + palpites + apostas.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TRIVELA
+════════════════════════════════════════════ -->
+<div id="trivela" class="portal-block">
+  <div class="browser-chrome">
+    <div class="browser-bar">
+      <div class="browser-dots">
+        <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+      </div>
+      <div class="url-pill">trivela.com.br/apostas/copa-do-mundo-2026/</div>
+    </div>
+    <div class="nav-root trivela">
+      <div class="nav-top">
+        <div class="nav-logo">Tri<span class="accent">vela</span></div>
+        <div class="nav-items">
+          <div class="nav-item" onclick="toggleMega('trivela','apostas')">Apostas</div>
+          <div class="nav-item" onclick="toggleMega('trivela','casas')">Casas</div>
+          <div class="nav-item" onclick="toggleMega('trivela','palpites')">Palpites</div>
+          <div class="nav-item" onclick="toggleMega('trivela','pagamentos')">Pagamentos</div>
+          <div class="nav-item" onclick="toggleMega('trivela','codigos')">Códigos</div>
+          <div class="nav-item copa-item open" id="trivela-copa" onclick="toggleMega('trivela','copa')">
+            Copa 2026 <span class="copa-badge">novo</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="trivela-mega-copa" class="mega-menu">
+        <div class="mega-inner">
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Cobertura</span></div>
+            <div class="mega-link featured">Hub Copa 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Notícias Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Grupos e classificação <span class="arrow">›</span></div>
+            <div class="mega-link">Seleção do Brasil <span class="arrow">›</span></div>
+            <div class="mega-link">Calendário de jogos <span class="arrow">›</span></div>
+            <div class="mega-link">Estatísticas Copa <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head">
+              <div class="col-dot dot-purple"></div>
+              <span class="col-title">Palpites Copa</span>
+            </div>
+            <div class="mega-link featured">Palpites diários <span class="arrow">›</span></div>
+            <div class="mega-link">Fase de grupos <span class="arrow">›</span></div>
+            <div class="mega-link">Oitavas de final <span class="arrow">›</span></div>
+            <div class="mega-link">Quartas de final <span class="arrow">›</span></div>
+            <div class="mega-link">Campeão Copa 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Artilheiro Copa <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head">
+              <div class="col-dot dot-amber"></div>
+              <span class="col-title">Apostas Copa</span>
+            </div>
+            <div class="mega-link featured">Melhores casas Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Bônus exclusivos Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Códigos especiais Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Odds Brasil na Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Mercados especiais <span class="arrow">›</span></div>
+            <div class="mega-link">Guia completo Copa <span class="arrow">›</span></div>
+          </div>
+        </div>
+        <div class="quick-nav">
+          <span class="qn-label">Fase atual:</span>
+          <button class="qn-pill active-pill">Fase de grupos</button>
+          <button class="qn-pill">Oitavas</button>
+          <button class="qn-pill">Quartas</button>
+          <button class="qn-pill">Semifinal</button>
+          <button class="qn-pill">Final</button>
+        </div>
+      </div>
+
+      <div id="trivela-mega-apostas" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-amber"></div><span class="col-title">Apostas esportivas</span></div>
+            <div class="mega-link">Bets legalizadas <span class="arrow">›</span></div>
+            <div class="mega-link">Novas casas <span class="arrow">›</span></div>
+            <div class="mega-link">Plataformas que mais pagam <span class="arrow">›</span></div>
+            <div class="mega-link">Apps de apostas <span class="arrow">›</span></div>
+            <div class="mega-link">Bets com cashback <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Bônus</span></div>
+            <div class="mega-link">Casas com bônus <span class="arrow">›</span></div>
+            <div class="mega-link">Apostas grátis <span class="arrow">›</span></div>
+            <div class="mega-link featured">Bônus Copa 2026 <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-purple"></div><span class="col-title">Guias</span></div>
+            <div class="mega-link">Guias de apostas <span class="arrow">›</span></div>
+            <div class="mega-link">Iniciantes <span class="arrow">›</span></div>
+            <div class="mega-link featured">Guia Copa 2026 <span class="arrow">›</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="trivela-mega-casas" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col span2">
+            <div class="col-head"><div class="col-dot dot-amber"></div><span class="col-title">Casas em destaque</span></div>
+            <div class="col-inner-grid">
+              <div class="mega-link">Bet365 <span class="arrow">›</span></div>
+              <div class="mega-link">Betano <span class="arrow">›</span></div>
+              <div class="mega-link">Superbet <span class="arrow">›</span></div>
+              <div class="mega-link">KTO <span class="arrow">›</span></div>
+              <div class="mega-link">Novibet <span class="arrow">›</span></div>
+              <div class="mega-link">Stake <span class="arrow">›</span></div>
+            </div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Listas</span></div>
+            <div class="mega-link featured">Melhores Copa 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Para iniciantes <span class="arrow">›</span></div>
+            <div class="mega-link">Ver todas <span class="arrow">›</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="trivela-mega-palpites" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col span2">
+            <div class="col-head"><div class="col-dot dot-purple"></div><span class="col-title">Por competição</span></div>
+            <div class="col-inner-grid">
+              <div class="mega-link">Palpites de hoje <span class="arrow">›</span></div>
+              <div class="mega-link">Palpites de amanhã <span class="arrow">›</span></div>
+              <div class="mega-link featured">Copa 2026 <span class="arrow">›</span></div>
+              <div class="mega-link">Brasileirão <span class="arrow">›</span></div>
+              <div class="mega-link">Libertadores <span class="arrow">›</span></div>
+              <div class="mega-link">Champions League <span class="arrow">›</span></div>
+            </div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-amber"></div><span class="col-title">Tipo de aposta</span></div>
+            <div class="mega-link">Simples <span class="arrow">›</span></div>
+            <div class="mega-link">Múltiplas <span class="arrow">›</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="trivela-mega-pagamentos" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col span3">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Por método de pagamento</span></div>
+            <div class="col-inner-grid3">
+              <div class="mega-link">Casas com Pix <span class="arrow">›</span></div>
+              <div class="mega-link">Saque rápido <span class="arrow">›</span></div>
+              <div class="mega-link">Pagamento antecipado <span class="arrow">›</span></div>
+              <div class="mega-link">Depósito R$1 <span class="arrow">›</span></div>
+              <div class="mega-link">Depósito R$5 <span class="arrow">›</span></div>
+              <div class="mega-link">Cashback <span class="arrow">›</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="trivela-mega-codigos" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col span3">
+            <div class="col-head"><div class="col-dot dot-amber"></div><span class="col-title">Códigos por casa</span></div>
+            <div class="col-inner-grid3">
+              <div class="mega-link">Código Betano <span class="arrow">›</span></div>
+              <div class="mega-link">Código Bet365 <span class="arrow">›</span></div>
+              <div class="mega-link">Código Superbet <span class="arrow">›</span></div>
+              <div class="mega-link">Código KTO <span class="arrow">›</span></div>
+              <div class="mega-link">Código Novibet <span class="arrow">›</span></div>
+              <div class="mega-link featured">Códigos Copa 2026 <span class="arrow">›</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="anno"><strong>Trivela:</strong> Copa 2026 vira o 6º item no menu, complementando a estrutura já existente. Quick-nav por fase do torneio no rodapé do mega menu facilita a navegação durante o campeonato.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     LANCE!
+════════════════════════════════════════════ -->
+<div id="lance" class="portal-block">
+  <div class="browser-chrome">
+    <div class="browser-bar">
+      <div class="browser-dots">
+        <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+      </div>
+      <div class="url-pill">lance.com.br/copa-do-mundo-2026/</div>
+    </div>
+    <div class="nav-root lance">
+      <div class="nav-top">
+        <div class="nav-logo"><span class="accent-green">Lance</span>!</div>
+        <div class="nav-items">
+          <div class="nav-item" onclick="toggleMega('lance','ultimas')">Últimas</div>
+          <div class="nav-item" onclick="toggleMega('lance','futebol')">Futebol</div>
+          <div class="nav-item" onclick="toggleMega('lance','brasileiro')">Brasileirão</div>
+          <div class="nav-item copa-item open" id="lance-copa" onclick="toggleMega('lance','copa')">
+            Copa 2026 <span class="copa-badge">expandido</span>
+          </div>
+          <div class="nav-item" onclick="toggleMega('lance','apostas')">
+            Apostas <span class="copa-badge badge-blue">atualizado</span>
+          </div>
+          <div class="nav-item" onclick="toggleMega('lance','esportes')">Esportes</div>
+        </div>
+      </div>
+
+      <div id="lance-mega-copa" class="mega-menu">
+        <div class="mega-inner">
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Cobertura Copa</span></div>
+            <div class="mega-link featured">Hub Copa 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Notícias Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Grupos e classificação <span class="arrow">›</span></div>
+            <div class="mega-link">Seleção brasileira <span class="arrow">›</span></div>
+            <div class="mega-link">Simulador Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Ingressos Copa ↗ <span class="ext-note">parceiro</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head">
+              <div class="col-dot dot-purple"></div>
+              <span class="col-title">Palpites Copa <span class="col-title-badge">novo</span></span>
+            </div>
+            <div class="mega-link featured">Palpites do dia <span class="arrow">›</span></div>
+            <div class="mega-link">Fase de grupos <span class="arrow">›</span></div>
+            <div class="mega-link">Mata-mata Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Campeão Copa 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Artilheiro Copa <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head">
+              <div class="col-dot dot-amber"></div>
+              <span class="col-title">Apostar na Copa <span class="col-title-badge">novo</span></span>
+            </div>
+            <div class="mega-link featured">Melhores casas Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Bônus Copa 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Odds Brasil <span class="arrow">›</span></div>
+            <div class="mega-link">Guia apostas Copa <span class="arrow">›</span></div>
+            <div class="mega-link">Cassinos Copa <span class="arrow">›</span></div>
+          </div>
+        </div>
+        <div class="quick-nav">
+          <span class="qn-label">Acesso rápido:</span>
+          <button class="qn-pill active-pill">Copa 2026</button>
+          <button class="qn-pill">Simulador</button>
+          <button class="qn-pill">Tabela grupos</button>
+          <button class="qn-pill">Seleção brasileira</button>
+        </div>
+      </div>
+
+      <div id="lance-mega-apostas" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-amber"></div><span class="col-title">Casas de apostas</span></div>
+            <div class="mega-link featured">Melhores casas 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Casas legalizadas <span class="arrow">›</span></div>
+            <div class="mega-link">Casas com bônus <span class="arrow">›</span></div>
+            <div class="mega-link">Apps de apostas <span class="arrow">›</span></div>
+            <div class="mega-link featured">Copa 2026 ↗ <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-purple"></div><span class="col-title">Palpites</span></div>
+            <div class="mega-link">Palpites de hoje <span class="arrow">›</span></div>
+            <div class="mega-link featured">Copa 2026 <span class="arrow">›</span></div>
+            <div class="mega-link">Brasileirão <span class="arrow">›</span></div>
+          </div>
+          <div class="mega-col">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Guias</span></div>
+            <div class="mega-link">Como apostar online <span class="arrow">›</span></div>
+            <div class="mega-link">Apostas ao vivo <span class="arrow">›</span></div>
+            <div class="mega-link">Jogo responsável <span class="arrow">›</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="lance-mega-ultimas" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col span3">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Últimas notícias</span></div>
+            <div class="col-inner-grid3">
+              <div class="mega-link featured">Copa 2026 <span class="arrow">›</span></div>
+              <div class="mega-link">Brasileirão <span class="arrow">›</span></div>
+              <div class="mega-link">Seleção <span class="arrow">›</span></div>
+              <div class="mega-link">Mercado <span class="arrow">›</span></div>
+              <div class="mega-link">Internacional <span class="arrow">›</span></div>
+              <div class="mega-link">Ver todas <span class="arrow">›</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="lance-mega-futebol" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col span3">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Times</span></div>
+            <div class="col-inner-grid3">
+              <div class="mega-link">Flamengo <span class="arrow">›</span></div>
+              <div class="mega-link">Corinthians <span class="arrow">›</span></div>
+              <div class="mega-link">Palmeiras <span class="arrow">›</span></div>
+              <div class="mega-link">São Paulo <span class="arrow">›</span></div>
+              <div class="mega-link">Grêmio <span class="arrow">›</span></div>
+              <div class="mega-link">Ver todos <span class="arrow">›</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="lance-mega-brasileiro" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col span3">
+            <div class="col-head"><div class="col-dot dot-green"></div><span class="col-title">Brasileirão 2026</span></div>
+            <div class="col-inner-grid3">
+              <div class="mega-link">Tabela <span class="arrow">›</span></div>
+              <div class="mega-link">Jogos da rodada <span class="arrow">›</span></div>
+              <div class="mega-link">Artilharia <span class="arrow">›</span></div>
+              <div class="mega-link featured">Palpites Brasileirão <span class="arrow">›</span></div>
+              <div class="mega-link">Série B <span class="arrow">›</span></div>
+              <div class="mega-link">Série C <span class="arrow">›</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="lance-mega-esportes" class="mega-menu" style="display:none">
+        <div class="mega-inner">
+          <div class="mega-col span3">
+            <div class="col-head"><div class="col-dot dot-purple"></div><span class="col-title">Outros esportes</span></div>
+            <div class="col-inner-grid3">
+              <div class="mega-link">Basquete <span class="arrow">›</span></div>
+              <div class="mega-link">Tênis <span class="arrow">›</span></div>
+              <div class="mega-link">Fórmula 1 <span class="arrow">›</span></div>
+              <div class="mega-link">MMA <span class="arrow">›</span></div>
+              <div class="mega-link">Vôlei <span class="arrow">›</span></div>
+              <div class="mega-link">eSports <span class="arrow">›</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="anno"><strong>Lance!:</strong> A Copa já existe no menu — basta expandir com 2 colunas novas (Palpites Copa e Apostar na Copa, ambas marcadas como "novo"). A aba Apostas também ganha mega menu estruturado com link de volta para Copa.</div>
+</div>
+
+<script>
+  function switchPortal(id, btn) {
+    document.querySelectorAll('.portal-block').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.ps-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function toggleMega(portal, tab) {
+    const map = {
+      ude:     ['copa','apostas','palpites','noticias'],
+      placar:  ['copa','casas','cassinos','palpites','none'],
+      trivela: ['copa','apostas','casas','palpites','pagamentos','codigos'],
+      lance:   ['copa','apostas','ultimas','futebol','brasileiro','esportes']
+    };
+    (map[portal] || []).forEach(s => {
+      const el = document.getElementById(portal + '-mega-' + s);
+      if (el) el.style.display = (s === tab) ? 'block' : 'none';
+    });
+    document.querySelectorAll('#' + portal + ' .nav-item').forEach(n => n.classList.remove('open'));
+    const copaEl = document.getElementById(portal + '-copa');
+    if (tab === 'copa' && copaEl) copaEl.classList.add('open');
+  }
+</script>
+</body>
+</html>
